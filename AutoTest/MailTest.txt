@@ -1,0 +1,80 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
+import java.util.concurrent.TimeUnit;
+
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
+
+import org.junit.*;
+import org.openqa.selenium.*;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.Select;
+
+public class MailTestMaven {
+    private WebDriver driver;
+    private String baseUrl;
+    private String log;
+    private String pass;
+    private String tema;
+    private String post;
+
+
+    @Before
+    public void setUp() throws Exception {
+        System.setProperty("webdriver.chrome.driver", "C://Users//User//Desktop//Java//chromedriver.exe");
+        driver = new ChromeDriver();
+        baseUrl = "https://mail.ru/?from=logout/";
+        log = "zoltmansha@mail.ru";
+        pass = "rukola18";
+        post = "alika-12@ukr.net";
+        tema = "Hillel";
+
+
+        driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+    }
+
+    @Test
+    public void JavaTest1Sel() throws Exception {
+        driver.get(baseUrl);
+        driver.findElement(By.xpath(".//*[@id='mailbox__login']")).clear();
+        driver.findElement(By.xpath(".//*[@id='mailbox__password']")).clear();
+        driver.findElement(By.xpath(".//*[@id='mailbox__login']")).sendKeys(log);
+        driver.findElement(By.xpath(".//*[@id='mailbox__password']")).sendKeys(pass);
+        driver.findElement(By.xpath(".//*[@id='mailbox__auth__button']")).click();
+        Thread.sleep(4000);
+        driver.findElement(By.xpath(".//*[@id='b-toolbar__left']/div/div/div[2]/div/a")).click();
+        Thread.sleep(4000);
+        driver.findElement(By.cssSelector("textarea[class*='js-input compose__labels__input' ]")).sendKeys(post);
+        Thread.sleep(4000);
+
+        driver.findElement(By.name("Subject")).clear();
+        driver.findElement(By.name("Subject")).sendKeys(tema);
+
+        driver.findElement(By.xpath(".//*[@id='b-toolbar__right']/div[3]/div/div[2]/div[1]/div/span")).click();
+        Thread.sleep(4000);
+        driver.findElement(By.xpath(".//*[@id='MailRuConfirm']/div/div[3]/form/div[2]/button[1]")).click();
+        Thread.sleep(4000);
+        driver.findElement(By.xpath(".//*[@id='b-nav_folders']/div/div[2]/a/span")).click();
+        Thread.sleep(4000);
+
+        List<WebElement> resultList = driver.findElements(By.xpath(".//*[@id='b-letters']/div[1]/div[2]/div/div[2]/div/div/a/div[4]/div[3]/div[1]/div"));
+        for (WebElement letter : resultList) {
+
+            if (letter.getText().equals(tema) == true) {
+                letter.click();
+                break;
+
+            }
+        }
+    }
+
+
+
+    @After
+    public void tearDown () throws Exception {
+        driver.quit();
+
+    }
+}
